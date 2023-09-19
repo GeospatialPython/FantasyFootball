@@ -6,6 +6,7 @@ model and prints out your optimal lineup.
 """
 
 import requests
+import warnings
 
 def fetch_tier_data(url):
     """Fetches and parses tier data from a given URL."""
@@ -22,7 +23,7 @@ def fetch_tier_data(url):
 def recommend_best_player(position_tiers, roster, used_players):
     for player in roster:
         if player not in [p for tier_players in position_tiers.values() for p in tier_players]:
-            raise ValueError(f"Player {player} not found in real-time data.")
+            warnings.warn(f"Player {player} not found in real-time data.")
     
     for tier, players in position_tiers.items():
         for player in players:
@@ -30,7 +31,7 @@ def recommend_best_player(position_tiers, roster, used_players):
                 used_players.add(player)
                 return player
 
-def recommend_lineup(tier_data, roster, select_flex_first=True):
+def recommend_lineup(tier_data, roster, select_flex_first=False):
     recommended_lineup = {}
     used_players = set()
     
@@ -81,8 +82,7 @@ def recommend_lineup(tier_data, roster, select_flex_first=True):
 # Your roster data
 roster_dict = {
     'QB': ['Joe Burrow', 'Jordan Love'],
-    'WR': ['Garrett Wilson', 'Jaylen Waddle', 'Chris Godwin', 
-           'Christian Watson'],
+    'WR': ['Garrett Wilson', 'Jaylen Waddle', 'Chris Godwin', 'Christian Watson'],
     'RB': ['Christian McCaffrey', 'Derrick Henry', 'Khalil Herbert', 'AJ Dillon', 'Samaje Perine'],
     'TE': ['T.J. Hockenson', 'Chigoziem Okonkwo'],
     'K': ['Tyler Bass'],
@@ -116,7 +116,6 @@ for k,v in recommended_lineup.items():
     elif len(k)==2:
         print(f'{k}:   {v}')
     elif len(k)==3:
-        print(f'{k}:  
-              {v}')
+        print(f'{k}:  {v}')
     else:
         print(f'{k}: {v}')
